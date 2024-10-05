@@ -1,0 +1,51 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        function analyzeShipFuelUsage(voyageRecords) {
+            const mergedShips = voyageRecords.reduce((acc, record) => {
+                const existingShip = acc.find(
+                    (ship) => ship.shipId === record.shipId
+                );
+                if (existingShip) {
+                    existingShip.distance += record.distance;
+                    existingShip.fuelUsed += record.fuelUsed;
+                } else {
+                    acc.push({ ...record });
+                }
+                return acc;
+            }, []);
+
+            let totalFuelUsed = 0;
+            mergedShips.forEach((ship) => {
+                ship.efficiency = Number((ship.distance / ship.fuelUsed).toFixed(2));
+                totalFuelUsed += ship.fuelUsed;
+            });
+
+            mergedShips.sort((a, b) => b.efficiency - a.efficiency);
+
+            return {
+                ships: mergedShips,
+                totalFuelUsed,
+            };
+        }
+
+        // 테스트
+        const voyageRecords = [
+            { shipId: 1, shipName: "POSSM", distance: 1000, fuelUsed: 200 },
+            { shipId: 2, shipName: "폴라리스", distance: 1500, fuelUsed: 280 },
+            { shipId: 1, shipName: "POSSM", distance: 800, fuelUsed: 160 },
+            { shipId: 3, shipName: "시도상선", distance: 2000, fuelUsed: 400 },
+        ];
+
+        console.log(analyzeShipFuelUsage(voyageRecords));
+    </script>
+</body>
+
+</html>
